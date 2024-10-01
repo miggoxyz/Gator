@@ -49,22 +49,28 @@ func handlerRegister(s *state, cmd command) error {
 }
 
 func handlerDeleteAll(s *state, cmd command) error {
-	fmt.Println("Deletion of all users initialised. Users before: ")
-	users, err := s.db.GetUsers(context.Background())
-	if err != nil {
-		return fmt.Errorf("error getting users: %w", err)
-	}
-	fmt.Println(users)
-	err = s.db.DelUsers(context.Background())
+	err := s.db.DelUsers(context.Background())
 	if err != nil {
 		return fmt.Errorf("could not delete users: %w", err)
 	}
-	users, err = s.db.GetUsers(context.Background())
-	if err != nil {
-		return fmt.Errorf("error getting users: %w", err)
-	}
-	fmt.Println("Deleted all users. Users now: ")
-	fmt.Println(users)
+	fmt.Println("Deletion of all users successful.")
 	
+	return nil
+}
+
+func handlerGetUsers(s *state, cmd command) error {
+	users, err := s.db.GetUsers(context.Background())
+	if err != nil {
+		return fmt.Errorf("error getting users: %w", err)	
+	}
+
+	for _, user := range users {
+		fmt.Printf("* %s ", user.Name)
+		if user.Name == s.cfg.User {
+			fmt.Printf("(current)")
+		}
+		fmt.Printf("\n")
+	}
+
 	return nil
 }
