@@ -47,3 +47,24 @@ func handlerRegister(s *state, cmd command) error {
 	fmt.Printf("User was created successfully: %v\n", user)
 	return nil
 }
+
+func handlerDeleteAll(s *state, cmd command) error {
+	fmt.Println("Deletion of all users initialised. Users before: ")
+	users, err := s.db.GetUsers(context.Background())
+	if err != nil {
+		return fmt.Errorf("error getting users: %w", err)
+	}
+	fmt.Println(users)
+	err = s.db.DelUsers(context.Background())
+	if err != nil {
+		return fmt.Errorf("could not delete users: %w", err)
+	}
+	users, err = s.db.GetUsers(context.Background())
+	if err != nil {
+		return fmt.Errorf("error getting users: %w", err)
+	}
+	fmt.Println("Deleted all users. Users now: ")
+	fmt.Println(users)
+	
+	return nil
+}
